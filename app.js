@@ -14,23 +14,6 @@ app.use(
   })
 );
 
-app.get('/demo', (req, res) => {
-  const einTag = 1000 * 60 * 60 * 24;
-  const eineStunde = 1000 * 60 * 60;
-  const zehnSekunden = 1000 * 10;
-  const eineMinute = 1000 * 60;
-  res.cookie('meinCookie', 'Das hier ist ein Text im Cookie', {
-    maxAge: eineStunde,
-    httpOnly: true,
-  });
-  res.send('Du hast eine Cookie!');
-});
-
-app.get('/mitcookie', (req, res) => {
-  console.log('Hier ist das Cookie:', req.cookies);
-  res.send('Mit Cookie');
-});
-
 app.post('/login', (req, res) => {
   const userName = req.body.userName;
   const token = jwt.sign({ userName }, process.env.JWT || 'SecretJWTKey', {
@@ -57,16 +40,28 @@ app.get('/nurEingeloggt', (req, res) => {
     const token = req.cookies.loginCookie;
     console.log(token);
     const tokenDecoded = jwt.verify(token, process.env.JWT || 'SecretJWTKey');
-    console.log({ tokenDecoded });
+    console.log('User ist verifiziert, Daten wird an den Client gesendet');
     const { userName } = tokenDecoded;
     res.send({
-      message: 'Inhalt nur für eingeloggten User',
+      message:
+        'Inhalt nur für eingeloggten User. Kommt von API, muss gefetcht werden. Frontend kennt das ohne Fetchen nicht!!!',
     });
   } catch (error) {
     console.log(error);
     res.status(401).send({
       message: 'Nicht eingeloggt',
     });
+  }
+});
+
+app.get('/checklogin', (req, res) => {
+  try {
+    const token = req.cookies.loginCookie;
+    const tokenDecoded = jwt.verify(token, process.env.JWT || 'SecretJWTKey');
+    console.log('Token im Cookie ist gültig. Der User ist eingeloggt');
+    res.status(200).end();
+  } catch (error) {
+    res.status(401).end();
   }
 });
 
