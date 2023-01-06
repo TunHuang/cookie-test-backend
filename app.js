@@ -5,8 +5,10 @@ import cors from 'cors';
 
 const app = express();
 
+// Middleware für cookie
 app.use(cookieParser());
 app.use(express.json());
+// Wichtig: Diese zwei Optionen müssen gesetzt sein (wobei origin nicht * sein darf), damit Cookies funktionieren
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -20,6 +22,7 @@ app.post('/login', (req, res) => {
     expiresIn: '1d',
   });
   const einTag = 1000 * 60 * 60 * 24;
+  // mit res.cookie erstelle ich ein Cookie, das an den Client gesendet wird.
   res
     .cookie('loginCookie', token, {
       maxAge: einTag,
@@ -36,7 +39,7 @@ app.get('/nurEingeloggt', (req, res) => {
   try {
     // token in headers
     // const token = req.headers.authorization.split(' ')[1];
-    // token in cookie
+    // token in cookie. Mit req.cookies können wir auf sie zugreifen
     const token = req.cookies.loginCookie;
     console.log(token);
     const tokenDecoded = jwt.verify(token, process.env.JWT || 'SecretJWTKey');
