@@ -30,6 +30,7 @@ app.post('/login', (req, res) => {
       maxAge: einTag,
       httpOnly: true,
       sameSite: 'none',
+      secure: true,
     })
     .send({
       auth: 'eingeloggt',
