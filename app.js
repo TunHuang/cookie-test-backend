@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 
+const PORT = process.env.PORT || 4000;
+
 const app = express();
 
 // Middleware für cookie
@@ -11,7 +13,7 @@ app.use(express.json());
 // Wichtig: Diese zwei Optionen müssen gesetzt sein (wobei origin nicht * sein darf), damit Cookies funktionieren
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT || 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -68,4 +70,4 @@ app.get('/checklogin', (req, res) => {
   }
 });
 
-app.listen(4000, () => console.log('Sever hört auf 4000'));
+app.listen(PORT, () => console.log('Sever hört auf ' + PORT));
