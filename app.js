@@ -29,6 +29,7 @@ app.post('/login', (req, res) => {
     .cookie('loginCookie', token, {
       maxAge: einTag,
       httpOnly: true,
+      sameSite: 'none',
     })
     .send({
       auth: 'eingeloggt',
